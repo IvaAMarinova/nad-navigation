@@ -1,0 +1,44 @@
+{
+  "hz": 30.0,
+  "tracker": {
+    "alpha": 0.82,
+    "hold_seconds": 0.35,
+    "decay": 0.5,
+    "reacquire_conf_min": 0.7
+  },
+  "controller": {
+    "conf_min": 0.5,
+    "x_tol": 0.10,
+    "y_tol": 0.10,
+    "centered_hold_frames": 6,
+    "size_capture": 0.78,
+    "kp_x": 1.2,
+    "kd_x": 0.16,
+    "kp_y": 1.0,
+    "kd_y": 0.12,
+    "base_forward": 0.35,
+    "forward_min": 0.0,
+    "max_forward": 0.8,
+    "x_gate": 0.35,
+    "y_gate": 0.35,
+    "t_lead": 0.0,
+    "allowed_modes": ["LATERAL_ONLY", "FLY_STRAIGHT"],
+    "default_mode": "LATERAL_ONLY",
+    "mode_override": "LATERAL_ONLY",
+    "fly_straight_seconds": 2.5,
+    "fly_straight_forward": 0.35,
+    "fly_straight_yaw": 0.0,
+    "fly_straight_vertical": 0.0,
+    "fly_straight_after_mode": "LATERAL_ONLY"
+  },
+  "live": {
+    "udp_addr": "0.0.0.0:9001",
+    "read_buffer": 2048
+  },
+  "output": {
+    "udp_addr": "127.0.0.1:9002"
+  },
+  "log": {
+    "enabled": false
+  }
+}
