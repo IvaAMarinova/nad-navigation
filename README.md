@@ -45,19 +45,38 @@ yaw,vertical,forward,mode
 
 `mode` is the mode name (for example `TRACK` or `LATERAL_ONLY`).
 
+## Simulation Feed (UDP)
+
+Use the existing replay script to feed a CSV log into the live UDP input:
+
+```bash
+python scripts/send_udp.py --log iva-log-2.log --addr 127.0.0.1:9001
+```
+
+Options:
+
+- `--loop` to loop playback
+- `--speed 2.0` to run 2x real-time
+
 ## Visualization (jplot)
 
-This project exposes live values over `expvar` at `http://<viz.addr>/debug/vars`. You can plot them with `jplot` from:
+This project exposes live values over `expvar` at:
 
 ```
-$(cat /tmp/jplot_url.txt)
+http://<viz.addr>/debug/vars
+```
+
+Install jplot if needed:
+
+```bash
+go install github.com/rs/jplot@latest
 ```
 
 Example: plot input `cx/cy` and output commands:
 
 ```bash
-jplot --url http://127.0.0.1:7070/debug/vars input.cx input.cy
-jplot --url http://127.0.0.1:7070/debug/vars output.yaw output.vertical output.forward
+jplot --url http://127.0.0.1:7070/debug/vars --interval 200ms input_cx input_cy
+jplot --url http://127.0.0.1:7070/debug/vars --interval 200ms output_yaw output_vertical output_forward
 ```
 
 If you change the visualization address, update `viz.addr` in your config.

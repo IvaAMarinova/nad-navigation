@@ -79,11 +79,21 @@ func RunLive(cfg AppConfig) error {
 		}
 
 		if cfg.Log.Enabled {
-			fmt.Printf("%8.3f %-14s cx=%+.3f cy=%+.3f yaw=%+.3f vert=%+.3f fwd=%+.3f\n",
+			fmt.Printf(
+				"%8.3f mode=%-14s obs(cx=%+.3f cy=%+.3f size=%.3f det=%t conf=%.2f) "+
+					"state(cx=%+.3f cy=%+.3f age=%.2f valid=%t) "+
+					"cmd(yaw=%+.3f vert=%+.3f fwd=%+.3f)\n",
 				cmd.T,
 				cmd.Mode.String(),
+				lastObs.CX,
+				lastObs.CY,
+				lastObs.Size,
+				lastObs.Detected,
+				lastObs.Confidence,
 				st.CX,
 				st.CY,
+				st.Age,
+				st.Valid,
 				cmd.Yaw,
 				cmd.Vertical,
 				cmd.Forward,

@@ -8,8 +8,8 @@
   },
   "controller": {
     "conf_min": 0.5,
-    "x_tol": 0.10,
-    "y_tol": 0.10,
+    "x_tol": 0.1,
+    "y_tol": 0.1,
     "centered_hold_frames": 6,
     "size_capture": 0.78,
     "kp_x": 1.2,
@@ -43,6 +43,6 @@
     "addr": "127.0.0.1:7070"
   },
   "log": {
-    "enabled": false
+    "enabled": true
   }
 }
