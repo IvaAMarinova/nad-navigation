@@ -25,7 +25,7 @@
     "allowed_modes": ["LATERAL_ONLY", "FLY_STRAIGHT", "STOP"],
     "default_mode": "LATERAL_ONLY",
     "mode_override": "LATERAL_ONLY",
-    "fly_straight_seconds": 2.5,
+    "fly_straight_seconds": 5.0,
     "fly_straight_forward": 0.35,
     "fly_straight_yaw": 0.0,
     "fly_straight_vertical": 0.0,
