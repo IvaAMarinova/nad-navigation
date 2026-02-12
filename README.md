@@ -7,19 +7,19 @@ Live navigation controller written in Go. It reads camera point data from a UDP 
 Testing config (restricted modes):
 
 ```bash
-go run ./cmd/nad --config config.testing.json
+go run ./cmd/nad --config config.testing.jsonc
 ```
 
 Official config (full navigation modes):
 
 ```bash
-go run ./cmd/nad --config config.official.json
+go run ./cmd/nad --config config.official.jsonc
 ```
 
 Overrides (optional):
 
 ```bash
-go run ./cmd/nad --config config.testing.json --live-addr 0.0.0.0:9001 --output-addr 127.0.0.1:9002
+go run ./cmd/nad --config config.testing.jsonc --live-addr 0.0.0.0:9001 --output-addr 127.0.0.1:9002
 ```
 
 ## Input Format (UDP)
@@ -99,9 +99,9 @@ Modes define how the controller converts camera error into steering commands. Ea
 
 ## Configuration Profiles
 
-Two configs are provided to keep testing safe and explicit:
+Two JSONC configs are provided to keep testing safe and explicit (comments are allowed):
 
-- `config.testing.json` limits modes to `LATERAL_ONLY` and `FLY_STRAIGHT` and pins `mode_override` so the controller cannot enter operational modes while testing.
-- `config.official.json` enables `SEARCH/TRACK/APPROACH/CAPTURE` and clears `mode_override` so the controller can transition normally.
+- `config.testing.jsonc` limits modes to `LATERAL_ONLY` and `FLY_STRAIGHT` and pins `mode_override` so the controller cannot enter operational modes while testing.
+- `config.official.jsonc` enables `SEARCH/TRACK/APPROACH/CAPTURE` and clears `mode_override` so the controller can transition normally.
 
 If you need a custom profile, copy one of these and adjust `controller.allowed_modes` and `controller.mode_override`.
