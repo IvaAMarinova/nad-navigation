@@ -222,6 +222,7 @@ func (dc *DroneController) commandLateralOnly(st AnchorState) BodyCommand {
 	ex := -cx
 	yaw := clamp(dc.Cfg.KpX*ex+dc.Cfg.KdX*(-st.VX), -1, 1)
 	forward := 0.0
+	modeOut := ModeStop
 	if dc.Cfg.FlyStraightSeconds > 0 && dc.lateralStartT != nil {
 		elapsed := st.T - *dc.lateralStartT
 		half := dc.Cfg.FlyStraightSeconds / 2
@@ -234,9 +235,10 @@ func (dc *DroneController) commandLateralOnly(st AnchorState) BodyCommand {
 			}
 			scale = clamp(scale, 0, 1)
 			forward = dc.Cfg.FlyStraightForward * scale
+			modeOut = ModeFlyStraight
 		}
 	}
-	return BodyCommand{T: st.T, Mode: ModeLateralOnly, Yaw: yaw, Vertical: 0, Forward: forward}
+	return BodyCommand{T: st.T, Mode: modeOut, Yaw: yaw, Vertical: 0, Forward: forward}
 }
 
 // commandFlyStraight outputs a constant forward command for testing.
