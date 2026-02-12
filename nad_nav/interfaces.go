@@ -42,6 +42,7 @@ const (
 	ModeCapture
 	ModeFlyStraight
 	ModeLateralOnly
+	ModeStop
 )
 
 func (m Mode) String() string {
@@ -58,6 +59,8 @@ func (m Mode) String() string {
 		return "FLY_STRAIGHT"
 	case ModeLateralOnly:
 		return "LATERAL_ONLY"
+	case ModeStop:
+		return "STOP"
 	default:
 		return fmt.Sprintf("Mode(%d)", int(m))
 	}

@@ -63,6 +63,8 @@ func ParseMode(value string) (Mode, error) {
 		return ModeFlyStraight, nil
 	case "LATERAL_ONLY":
 		return ModeLateralOnly, nil
+	case "STOP":
+		return ModeStop, nil
 	default:
 		return ModeSearch, fmt.Errorf("unknown mode %q", value)
 	}

@@ -88,7 +88,8 @@ Modes define how the controller converts camera error into steering commands. Ea
 **Testing-only modes**
 
 - `LATERAL_ONLY` for calibration or safe indoor tests when you only want left/right alignment. It outputs yaw corrections only and keeps `forward=0` and `vertical=0`.
-- `FLY_STRAIGHT` for drivetrain checks and timing tests. It outputs constant commands for `fly_straight_seconds`, then switches to `fly_straight_after_mode`.
+- `FLY_STRAIGHT` for drivetrain checks and timing tests. It ramps forward speed up over the first half of `fly_straight_seconds`, then ramps down over the second half. After the timer, it switches to `fly_straight_after_mode` (for example `STOP`).
+- `STOP` requests a hold/stop behavior from downstream actuators while keeping the last commanded yaw/vertical/forward values.
 
 **Operational modes**
 

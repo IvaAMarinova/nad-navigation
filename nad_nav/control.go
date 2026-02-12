@@ -54,6 +54,8 @@ type DroneController struct {
 	centeredCount int
 	searchPhase   float64
 	flyStartT     *float64
+	lastCmd       BodyCommand
+	hasLastCmd    bool
 }
 
 // NewDroneController constructs a controller with the given configuration.
@@ -63,6 +65,13 @@ func NewDroneController(cfg ControllerConfig) *DroneController {
 
 // Step computes the next command for the current time step.
 func (dc *DroneController) Step(st AnchorState, dt float64) BodyCommand {
+	cmd := dc.step(st, dt)
+	dc.lastCmd = cmd
+	dc.hasLastCmd = true
+	return cmd
+}
+
+func (dc *DroneController) step(st AnchorState, dt float64) BodyCommand {
 	if dc.Cfg.ModeOverride != nil {
 		return dc.stepOverride(st, dt)
 	}
@@ -143,6 +152,8 @@ func (dc *DroneController) applyModePolicy(desired Mode) Mode {
 // commandForMode computes the command for a specific mode.
 func (dc *DroneController) commandForMode(mode Mode, st AnchorState, dt float64) BodyCommand {
 	switch mode {
+	case ModeStop:
+		return dc.commandStop(st)
 	case ModeFlyStraight:
 		return dc.commandFlyStraight(st)
 	case ModeLateralOnly:
@@ -202,13 +213,36 @@ func (dc *DroneController) commandLateralOnly(st AnchorState) BodyCommand {
 
 // commandFlyStraight outputs a constant forward command for testing.
 func (dc *DroneController) commandFlyStraight(st AnchorState) BodyCommand {
+	forward := dc.Cfg.FlyStraightForward
+	if dc.flyStartT != nil && dc.Cfg.FlyStraightSeconds > 0 {
+		elapsed := st.T - *dc.flyStartT
+		half := dc.Cfg.FlyStraightSeconds / 2
+		if half > 0 {
+			var scale float64
+			if elapsed <= half {
+				scale = elapsed / half
+			} else {
+				scale = (dc.Cfg.FlyStraightSeconds - elapsed) / half
+			}
+			scale = clamp(scale, 0, 1)
+			forward = dc.Cfg.FlyStraightForward * scale
+		}
+	}
 	return BodyCommand{
 		T:        st.T,
 		Mode:     ModeFlyStraight,
 		Yaw:      dc.Cfg.FlyStraightYaw,
 		Vertical: dc.Cfg.FlyStraightVertical,
-		Forward:  dc.Cfg.FlyStraightForward,
+		Forward:  forward,
 	}
+}
+
+func (dc *DroneController) commandStop(st AnchorState) BodyCommand {
+	if !dc.hasLastCmd {
+		return BodyCommand{T: st.T, Mode: ModeStop, Yaw: 0, Vertical: 0, Forward: 0}
+	}
+	last := dc.lastCmd
+	return BodyCommand{T: st.T, Mode: ModeStop, Yaw: last.Yaw, Vertical: last.Vertical, Forward: last.Forward}
 }
 
 // clamp keeps value inside [lo, hi].

@@ -22,14 +22,14 @@
     "x_gate": 0.35,
     "y_gate": 0.35,
     "t_lead": 0.0,
-    "allowed_modes": ["LATERAL_ONLY", "FLY_STRAIGHT"],
+    "allowed_modes": ["LATERAL_ONLY", "FLY_STRAIGHT", "STOP"],
     "default_mode": "LATERAL_ONLY",
     "mode_override": "LATERAL_ONLY",
     "fly_straight_seconds": 2.5,
     "fly_straight_forward": 0.35,
     "fly_straight_yaw": 0.0,
     "fly_straight_vertical": 0.0,
-    "fly_straight_after_mode": "LATERAL_ONLY"
+    "fly_straight_after_mode": "STOP"
   },
   "live": {
     "udp_addr": "0.0.0.0:9001",
