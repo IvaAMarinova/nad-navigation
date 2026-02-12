@@ -34,88 +34,17 @@ type AppConfig struct {
 	Log        LogConfig        `json:"log"`
 }
 
-// LoadConfig reads the JSON/JSONC config from disk.
+// LoadConfig reads the JSON/JSON config from disk.
 func LoadConfig(path string) (AppConfig, error) {
 	var cfg AppConfig
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return cfg, err
 	}
-	data = stripJSONC(data)
 	if err := json.Unmarshal(data, &cfg); err != nil {
 		return cfg, err
 	}
 	return cfg, nil
-}
-
-func stripJSONC(input []byte) []byte {
-	var out []byte
-	out = make([]byte, 0, len(input))
-	inString := false
-	inEscape := false
-	inLineComment := false
-	inBlockComment := false
-
-	for i := 0; i < len(input); i++ {
-		c := input[i]
-		next := byte(0)
-		if i+1 < len(input) {
-			next = input[i+1]
-		}
-
-		if inLineComment {
-			if c == '\n' {
-				inLineComment = false
-				out = append(out, c)
-			}
-			continue
-		}
-
-		if inBlockComment {
-			if c == '*' && next == '/' {
-				inBlockComment = false
-				i++
-			}
-			continue
-		}
-
-		if inString {
-			out = append(out, c)
-			if inEscape {
-				inEscape = false
-				continue
-			}
-			if c == '\\' {
-				inEscape = true
-				continue
-			}
-			if c == '"' {
-				inString = false
-			}
-			continue
-		}
-
-		if c == '"' {
-			inString = true
-			out = append(out, c)
-			continue
-		}
-
-		if c == '/' && next == '/' {
-			inLineComment = true
-			i++
-			continue
-		}
-		if c == '/' && next == '*' {
-			inBlockComment = true
-			i++
-			continue
-		}
-
-		out = append(out, c)
-	}
-
-	return out
 }
 
 // ParseMode converts a mode name into a Mode enum.
