@@ -214,28 +214,32 @@ func (dc *DroneController) commandTrackLike(mode Mode, base ModeCommandConfig, s
 
 // commandLateralOnly outputs yaw corrections without forward movement.
 func (dc *DroneController) commandLateralOnly(st AnchorState) BodyCommand {
-	if dc.lateralStartT == nil {
-		t := st.T
-		dc.lateralStartT = &t
-	}
 	cx := st.CX + st.VX*dc.Cfg.TLead
 	ex := -cx
 	yaw := clamp(dc.Cfg.KpX*ex+dc.Cfg.KdX*(-st.VX), -1, 1)
 	forward := 0.0
 	modeOut := ModeStop
-	if dc.Cfg.FlyStraightSeconds > 0 && dc.lateralStartT != nil {
-		elapsed := st.T - *dc.lateralStartT
-		half := dc.Cfg.FlyStraightSeconds / 2
-		if half > 0 && elapsed <= dc.Cfg.FlyStraightSeconds {
-			var scale float64
-			if elapsed <= half {
-				scale = elapsed / half
-			} else {
-				scale = (dc.Cfg.FlyStraightSeconds - elapsed) / half
+	if !st.Valid {
+		dc.lateralStartT = nil
+	} else {
+		if dc.lateralStartT == nil {
+			t := st.T
+			dc.lateralStartT = &t
+		}
+		if dc.Cfg.FlyStraightSeconds > 0 && dc.lateralStartT != nil {
+			elapsed := st.T - *dc.lateralStartT
+			half := dc.Cfg.FlyStraightSeconds / 2
+			if half > 0 && elapsed <= dc.Cfg.FlyStraightSeconds {
+				var scale float64
+				if elapsed <= half {
+					scale = elapsed / half
+				} else {
+					scale = (dc.Cfg.FlyStraightSeconds - elapsed) / half
+				}
+				scale = clamp(scale, 0, 1)
+				forward = dc.Cfg.FlyStraightForward * scale
+				modeOut = ModeFlyStraight
 			}
-			scale = clamp(scale, 0, 1)
-			forward = dc.Cfg.FlyStraightForward * scale
-			modeOut = ModeFlyStraight
 		}
 	}
 	return BodyCommand{T: st.T, Mode: modeOut, Yaw: yaw, Vertical: 0, Forward: forward}
